@@ -1,4 +1,4 @@
-FROM rustlang/rust
+FROM rust
 
 WORKDIR /home
 
