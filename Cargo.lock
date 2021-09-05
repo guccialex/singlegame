@@ -365,6 +365,7 @@ dependencies = [
 [[package]]
 name = "board"
 version = "0.1.0"
+source = "git+https://github.com/guccialex/ccp-game/#8d6046349a6e76f19202dfdc75f386213c98b5c3"
 dependencies = [
  "orthogonal-rotation",
  "rand 0.7.3",
@@ -431,6 +432,7 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 [[package]]
 name = "chessengine"
 version = "0.1.0"
+source = "git+https://github.com/guccialex/ccp-game/#8d6046349a6e76f19202dfdc75f386213c98b5c3"
 dependencies = [
  "bincode",
  "board",
