@@ -159,6 +159,17 @@ async fn get_players(  data: web::Data< Mutex<Game> > ) -> impl Responder {
 
 
 
+#[get("/health")]
+async fn health(  ) -> impl Responder {
+
+    return "healthy".with_status(StatusCode::OK);
+
+}
+
+
+
+
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
@@ -184,13 +195,6 @@ async fn main() -> std::io::Result<()> {
             loop{
 
                 interval.tick().await;
-                
-                let result = std::panic::catch_unwind(move ||  {
-
-                
-                });
-
-
 
                 gamedata.lock().await.tick();
 
@@ -208,6 +212,7 @@ async fn main() -> std::io::Result<()> {
             .wrap( Cors::default().allow_any_origin() )
             .service(  ws_index  )
             .service(  get_players  )
+            .service(  health  )
             .app_data( gamedata.clone()  )
     })
     // start http server on 127.0.0.1:8000
