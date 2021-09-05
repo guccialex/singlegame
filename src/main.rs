@@ -33,6 +33,8 @@ const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
 /// do websocket handshake and start `MyWebSocket` actor
 #[get("/ws/")]
 async fn ws_index(r: HttpRequest, stream: web::Payload, data: web::Data< Mutex<Game> > ) -> Result<HttpResponse, Error> {
+
+    println!("getting ws request");
     
     if let Some(data) = data.lock().await.add_player(){
 
@@ -150,6 +152,8 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWs {
 #[get("/get_players")]
 async fn get_players(  data: web::Data< Mutex<Game> > ) -> impl Responder {
 
+    println!("requesting players");
+
     let data = data.lock().await;
 
     data.get_players_in_game().to_string()
@@ -161,6 +165,8 @@ async fn get_players(  data: web::Data< Mutex<Game> > ) -> impl Responder {
 
 #[get("/health")]
 async fn health(  ) -> impl Responder {
+
+    println!("health check");
 
     return "healthy".with_status(StatusCode::OK);
 
@@ -186,7 +192,6 @@ async fn main() -> std::io::Result<()> {
         let gamedata = gamedata.clone();
         let mut interval = time::interval(Duration::from_millis(33));
 
-
         //what to do if this panics?
         //i guess the most simple answer would be abort so the pod can start up again
         //but do I also panic when a player leaves? how long does it take to start up? 
@@ -195,10 +200,11 @@ async fn main() -> std::io::Result<()> {
 
             loop{
 
+                println!("ticking");
+
                 interval.tick().await;
 
                 gamedata.lock().await.tick();
-
             }
         });
     }
@@ -217,8 +223,8 @@ async fn main() -> std::io::Result<()> {
             .service(  health  )
             .app_data( gamedata.clone()  )
     })
-    // start http server on 127.0.0.1:8000
-    .bind("127.0.0.1:8000")?
+    .bind("0.0.0.0:8000")?
     .run()
     .await
+
 }
