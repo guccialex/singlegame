@@ -177,7 +177,7 @@ async fn health(  ) -> impl Responder {
 #[get("/")]
 async fn root(  ) -> impl Responder {
 
-    println!("health check");
+    println!("root check");
 
     return "connected".with_status(StatusCode::OK );
 
