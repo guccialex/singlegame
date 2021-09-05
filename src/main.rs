@@ -172,9 +172,10 @@ async fn health(  ) -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    
+    println!("starting");
 
-    std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
-
+    
     let gamedata = web::Data::new( Mutex::new(  Game::new() ) );
 
     use tokio::time::{self, Duration};
@@ -206,6 +207,7 @@ async fn main() -> std::io::Result<()> {
     use actix_cors::Cors;
 
     
+
     HttpServer::new(move || {
         App::new()
             // websocket route
