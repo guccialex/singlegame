@@ -7,4 +7,4 @@ COPY . .
 
 RUN cargo build --release
 
-CMD ROCKET_PORT=8000 cargo run --release
+CMD cargo run --release

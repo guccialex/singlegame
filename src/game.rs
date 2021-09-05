@@ -196,7 +196,6 @@ impl Game{
         
         let state = self.game.get_game_string_state();
 
-        println!("the state length {:?}", state.len() );
 
 
         if let Some(socket) = &mut self.player1websocket{

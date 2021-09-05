@@ -63,7 +63,6 @@ impl MyWs{
         }
     }
 
-
 }
 
 
@@ -73,7 +72,12 @@ impl Actor for MyWs {
 
     fn started(&mut self, ctx: &mut Self::Context) {
 
-        ctx.text("accepted connection, you are player idk");
+        ctx.text("accepted connection, send the message to set the player id");
+
+        let mut message = Vec::new();
+        message.push( 1 );
+        ctx.binary( message );
+
 
         let mut data = self.data.clone();
         
@@ -139,6 +143,7 @@ async fn get_players(  data: web::Data< Mutex<Game> > ) -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+
     std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
 
     let gamedata = web::Data::new( Mutex::new(  Game::new() ) );
@@ -158,8 +163,6 @@ async fn main() -> std::io::Result<()> {
 
         tokio::task::spawn(async move {
 
-            let average = 0;
-
             loop{
 
                 interval.tick().await;
@@ -168,23 +171,12 @@ async fn main() -> std::io::Result<()> {
                 let before = std::time::SystemTime::now();
                 gamedata.lock().await.tick();
 
-                //takes 500 micro seconds to tick
-                //0.5 millis to tick
-                //seems like this could work
-                //seems like the limit on servers I can serve is pod resources (maybe, i think containers are lightweight?)
-                //or the bandwidth, which as 170,000 bytes long is 170 kb per update
-                //but i think 170kb per second is like a low q music streaming bitrate. so it shouldnt be that bad to run like this
-                //println!( "time taken {:?}" , before.elapsed() );
-    
             }
-        
         });
-
     }
     
 
     use actix_cors::Cors;
-
 
     
     HttpServer::new(move || {

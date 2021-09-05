@@ -365,9 +365,7 @@ dependencies = [
 [[package]]
 name = "board"
 version = "0.1.0"
-source = "git+https://github.com/guccialex/board#52c553fca3a2ceecc5ddc05a0f66fada679072b0"
 dependencies = [
- "bincode",
  "orthogonal-rotation",
  "rand 0.7.3",
  "rapier3d",
@@ -433,7 +431,6 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 [[package]]
 name = "chessengine"
 version = "0.1.0"
-source = "git+https://github.com/guccialex/ccp-game/#552c6dd37a4a5fa5ac74212eb8123b9e43836cd8"
 dependencies = [
  "bincode",
  "board",
@@ -777,7 +774,6 @@ checksum = "bc633605454125dec4b66843673f01c7df2b89479b32e0ed634e43a91cff62a5"
 dependencies = [
  "autocfg",
  "hashbrown",
- "serde",
 ]
 
 [[package]]
@@ -834,12 +830,6 @@ name = "libc"
 version = "0.2.101"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3cb00336871be5ed2c8ed44b60ae9959dc5b9f08539422ed43f09e34ecaeba21"
-
-[[package]]
-name = "libm"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7d73b3f436185384286bd8098d17ec07c9a7d2388a6599f824d8502b529702a"
 
 [[package]]
 name = "local-channel"
@@ -1084,7 +1074,6 @@ dependencies = [
  "bitflags",
  "downcast-rs",
  "either",
- "indexmap",
  "nalgebra",
  "num-derive",
  "num-traits",
@@ -1460,7 +1449,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5132a955559188f3d13c9ba831e77c802ddc8782783f050ed0c52f5988b95f4c"
 dependencies = [
  "approx",
- "libm",
  "num-complex",
  "num-traits",
  "paste",
@@ -1560,9 +1548,9 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "syn"
-version = "1.0.75"
+version = "1.0.76"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7f58f7e8eaa0009c5fec437aabf511bd9933e4b2d7407bd05273c01a8906ea7"
+checksum = "c6f107db402c2c2055242dbf4d2af0e69197202e9faacbef9571bbe47f5a1b84"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1655,9 +1643,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-util"
-version = "0.6.7"
+version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1caa0b0c8d94a049db56b5acf8cba99dc0623aab1b26d5b5f5e2d945846b3592"
+checksum = "08d3725d3efa29485e87311c5b699de63cde14b00ed4d256b8318aa30ca452cd"
 dependencies = [
  "bytes",
  "futures-core",
@@ -1689,9 +1677,9 @@ dependencies = [
 
 [[package]]
 name = "typenum"
-version = "1.13.0"
+version = "1.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "879f6906492a7cd215bfa4cf595b600146ccfac0c79bcbd1f3000162af5e8b06"
+checksum = "b63708a265f51345575b27fe43f9500ad611579e764c79edbc2037b1121959ec"
 
 [[package]]
 name = "ucd-trie"
