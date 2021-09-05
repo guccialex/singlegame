@@ -200,7 +200,7 @@ async fn main() -> std::io::Result<()> {
 
             loop{
 
-                println!("ticking");
+                //println!("ticking");
 
                 interval.tick().await;
 
