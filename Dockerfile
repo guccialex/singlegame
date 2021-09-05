@@ -1,10 +1,13 @@
-FROM rustlang/rust:nightly
-
-WORKDIR /home
-
+FROM rustlang/rust:nightly as builder
+WORKDIR /
 COPY . .
+RUN cargo install --path .
 
 
-RUN cargo build --release
+FROM debian:bullseye-slim
 
-CMD ./target/release/singlegame
+RUN apt update && apt install
+
+COPY --from=builder /usr/local/cargo/bin/singlegame /usr/local/bin/singlegame
+
+CMD ["singlegame"]
