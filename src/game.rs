@@ -11,6 +11,8 @@ pub struct MessageInterface{
 
     going: Arc<Mutex<Vec< Vec<u8> >>>,
 
+    quit: Arc<Mutex<bool>>,
+
 }
 
 impl MessageInterface{
@@ -26,16 +28,14 @@ impl MessageInterface{
 
         let one = MessageInterface{
             coming: coming.clone(),
-            going: going.clone()
-        };
-
-        let two = MessageInterface{
-            coming,
-            going
+            going: going.clone(),
+            quit: Arc::new( Mutex::new( false )  ),
+            
         };
 
 
-        return (one, two);
+
+        return (one.clone(), one.clone());
 
 
     }
@@ -55,6 +55,15 @@ impl MessageInterface{
     pub fn set_coming(&mut self, data: Vec<u8>) {
         self.coming.lock().unwrap().push( data );
     }
+
+
+    pub fn quit(&mut self){
+        *self.quit.lock().unwrap() = true;
+    }
+
+
+
+
 
 
 }
@@ -83,7 +92,6 @@ pub struct Game{
 impl Game{
 
     pub fn is_finished(&self) -> bool{
-
         return false;
     }
 
@@ -102,11 +110,8 @@ impl Game{
     }
 
 
-    pub fn add_player( &mut self )  -> Option<MessageInterface>{
+    pub fn add_player( &mut self )  -> Option<(MessageInterface, u8)>{
 
-        //if there are no players and a player is added, reset the game
-
-        //if the players ever drop to zero
 
         if self.player1websocket.is_none(){
 
@@ -114,7 +119,7 @@ impl Game{
 
             self.player1websocket = Some(x);
 
-            return Some(toreturn);
+            return Some( (toreturn, 1) );
         }
         else if self.player2websocket.is_none(){
 
@@ -122,10 +127,15 @@ impl Game{
 
             self.player2websocket = Some(x);
 
-            return Some(toreturn);
+            return Some( (toreturn,2) );
         }
 
         return None;
+    }
+    
+
+    fn reset(&mut self){
+        *self = Game::new();
     }
 
 
@@ -135,22 +145,56 @@ impl Game{
 
         self.game.tick();
         
-        if self.player1websocket.is_some() && self.player2websocket.is_some(){
+        if self.are_both_players_connected(){
             self.game.tick();
         }
-
-
-        //self.send_state();
 
         
         self.ticksuntilresendstate += -1;
         if self.ticksuntilresendstate <= 0{
             self.send_state();
-            self.ticksuntilresendstate = 60;
+            self.ticksuntilresendstate = 40;
         }
 
-        
-        
+
+        if self.is_finished(){
+            self.reset();
+        }
+
+
+        //if either player sent a "quit" message, remove them from the game
+        //and end the game if its started
+        {
+
+            if let Some(message) = &self.player1websocket{
+                if *message.quit.lock().unwrap() == true{
+
+                    self.reset();
+                    //self.player1websocket = None;
+                }
+            }
+    
+            if let Some(message) = &self.player2websocket{
+                if *message.quit.lock().unwrap() == true{
+    
+                    self.reset();
+                    //self.player2websocket = None;
+                }
+            }
+
+        }
+
+    }
+
+
+    fn are_both_players_connected(&self) -> bool{
+
+        if self.player1websocket.is_some() && self.player2websocket.is_some(){
+    
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -172,13 +216,10 @@ impl Game{
 
 
         for (player, mut socket) in sockets{
-
             
             let message = socket.pop_coming();
 
             if let Some(message) = message{
-
-                println!("received input");
 
                 self.game.receive_bin_input(player, message);
 
@@ -192,11 +233,7 @@ impl Game{
 
     fn send_state(&mut self){
 
-        //tick teh game forward like 5 then send?
-        
         let state = self.game.get_game_string_state();
-
-
 
         if let Some(socket) = &mut self.player1websocket{
             socket.set_going( state.clone() );

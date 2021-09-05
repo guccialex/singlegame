@@ -37,7 +37,7 @@ async fn ws_index(r: HttpRequest, stream: web::Payload, data: web::Data< Mutex<G
     if let Some(data) = data.lock().await.add_player(){
 
         //accept and upgrade to websocket and return that
-        let res = ws::start(MyWs::new( data ), &r, stream);
+        let res = ws::start( MyWs::new( data ), &r, stream );
         
         res
     }
@@ -52,14 +52,17 @@ struct MyWs{
 
     //websocket interface
     data: MessageInterface,
+
+    playerid: u8,
 }
 
 impl MyWs{
 
-    fn new(data:  MessageInterface) -> MyWs{
+    fn new(x:  (MessageInterface, u8) ) -> MyWs{
 
         MyWs{
-            data
+            data: x.0,
+            playerid: x.1
         }
     }
 
@@ -75,7 +78,14 @@ impl Actor for MyWs {
         ctx.text("accepted connection, send the message to set the player id");
 
         let mut message = Vec::new();
-        message.push( 1 );
+
+        if self.playerid == 1{
+            message.push( 0 );
+        }
+        else{
+            message.push( 1 );
+        }
+
         ctx.binary( message );
 
 
@@ -91,11 +101,19 @@ impl Actor for MyWs {
                 ctx.binary( binary );
             }
 
-            //you can panic and quit if the websocket ends
-
             ctx.ping(b"");
 
         });
+
+    }
+
+
+    //if a player is removed
+    //remove a player
+    //and the game knows that if a player is removed, the game should restart
+    fn stopped(&mut self, ctx: &mut Self::Context){
+
+        self.data.quit();
 
     }
 
@@ -166,9 +184,14 @@ async fn main() -> std::io::Result<()> {
             loop{
 
                 interval.tick().await;
+                
+                let result = std::panic::catch_unwind(move ||  {
+
+                
+                });
 
 
-                let before = std::time::SystemTime::now();
+
                 gamedata.lock().await.tick();
 
             }
