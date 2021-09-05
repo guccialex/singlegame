@@ -1,4 +1,4 @@
-FROM rust:nightly
+FROM rustlang/rust:nightly
 
 WORKDIR /home
 
