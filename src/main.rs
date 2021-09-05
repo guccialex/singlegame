@@ -174,6 +174,16 @@ async fn health(  ) -> impl Responder {
 
 
 
+#[get("/")]
+async fn root(  ) -> impl Responder {
+
+    println!("health check");
+
+    return "connected".with_status(StatusCode::OK );
+
+}
+
+
 
 
 #[actix_web::main]
@@ -221,6 +231,8 @@ async fn main() -> std::io::Result<()> {
             .service(  ws_index  )
             .service(  get_players  )
             .service(  health  )
+            //pods have to respond on the root path for.. i dont even know
+            .service(  root  )
             .app_data( gamedata.clone()  )
     })
     .bind("0.0.0.0:8000")?
