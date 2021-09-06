@@ -174,14 +174,20 @@ async fn health(  ) -> impl Responder {
 
 
 
-#[get("/")]
-async fn root(  ) -> impl Responder {
+#[get("/{catched}")]
+async fn root( catched: web::Path<String> ) -> impl Responder {
 
     println!("root check");
 
-    return "connected".with_status(StatusCode::OK );
+    println!("this is hte path {:?}", catched);
+
+    let catched = catched.to_string();
+
+    return catched.with_status(StatusCode::OK );
 
 }
+
+
 
 
 
